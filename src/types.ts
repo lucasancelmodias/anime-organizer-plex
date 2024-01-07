@@ -9,3 +9,11 @@ export type TokenResponse = {
     expires_in: number;
     refresh_token: string;
 }
+
+export enum Status{
+	WATCHING = 'watching',
+	COMPLETED = 'completed',
+	ON_HOLD = 'on_hold',
+	DROPPED = 'dropped',
+	PLAN_TO_WATCH = 'plan_to_watch'
+}

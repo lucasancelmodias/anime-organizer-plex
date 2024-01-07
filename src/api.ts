@@ -2,7 +2,37 @@ import axios from "axios";
 import { getAccessTokenFromDB } from "./db";
 import { type TokenResponse } from "./types";
 
+//workaround for bun error 'bun zlib.createBrotliDecompress is not implemented' https://github.com/oven-sh/bun/issues/267#issuecomment-1854460357
+axios.defaults.headers.common["Accept-Encoding"] = "gzip";
+const anilistQuery = `query($name: String){
+    Media(search: $name, type: ANIME) {
+      idMal
+      episodes
+      title {
+        romaji
+        english
+        native
+        userPreferred
+      }
+    }
+  }`;
 
+
+export async function searchAnimeAnilist(name: string) : Promise<any>{
+
+    if(typeof process.env.ANILIST_BASE_URL === "undefined") {
+        throw new Error("Anilist base url is undefined");
+    }
+    const anilistURL = new URL(process.env.ANILIST_BASE_URL);
+    const response = await axios.post(anilistURL.toString(), {
+        query: anilistQuery,
+        variables: {
+            name
+        }
+    });
+    console.log(response);
+    return response.data;
+}
 
 export function generateAuthURL() : URL {
 

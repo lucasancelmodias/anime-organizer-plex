@@ -1,7 +1,8 @@
 import express, {type Express, type Request, type Response} from 'express';
 import multer from 'multer';
-import {generateAuthURL, getAccessToken, searchAnime, refreshToken} from "./src/api"
+import {generateAuthURL, getAccessToken, searchAnime, refreshToken, searchAnimeAnilist} from "./src/api"
 import {initDB,insertAccessToken, isTokenExpired} from "./src/db"
+import { Status } from './src/types';
 
 
 const store = multer.memoryStorage();
@@ -42,6 +43,7 @@ async function handleMediaPlay(payload: any) {
   const metadata = payload.Metadata;
 
   const title = metadata.grandparentTitle.replace(/[^\w\s]/gi, "");
+  //const status = payload.Metadata.index === episodes ? Status.COMPLETED : Status.WATCHING;
   console.log({title});
   
 }
@@ -69,7 +71,7 @@ app.get("/search", async (req: Request, res: Response) => {
   console.log(query);
   if(typeof query === "string") {
     try{
-      const results = await searchAnime(query);
+      const results = await searchAnimeAnilist(query);
       res.send(results);
     } catch(err) {
       res.send(err);
