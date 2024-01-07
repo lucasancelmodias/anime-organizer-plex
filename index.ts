@@ -105,7 +105,7 @@ app.get("/refreshToken", async (_req: Request, res: Response) => {
   try{
     const response = await refreshToken();
     insertAccessToken(response);
-    res.send(response);  
+    res.send("ok");  
 
   }catch(err){
     console.log('error refreshing token');
