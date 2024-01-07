@@ -36,6 +36,9 @@ export async function searchAnimeAnilist(name: string) : Promise<any>{
 
 export function generateAuthURL() : URL {
 
+    if(typeof process.env.MAL_API_URL === "undefined") {
+        throw new Error("Mal api url is undefined");
+    }
     //build the url using values from .env file
     let url = new URL("/v1/oauth2/authorize?response_type=code", process.env.MAL_API_URL);
 
