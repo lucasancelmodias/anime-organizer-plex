@@ -1,6 +1,6 @@
 import express, {type Express, type Request, type Response} from 'express';
 import multer from 'multer';
-import {generateAuthURL, getAccessToken, searchAnime, refreshToken, searchAnimeAnilist} from "./src/api"
+import {generateAuthURL, getAccessToken, searchAnime, refreshToken, searchAnimeAnilist,updateAnimeStatus} from "./src/api"
 import {initDB,insertAccessToken, isTokenExpired} from "./src/db"
 import { Status } from './src/types';
 
@@ -41,10 +41,16 @@ async function handleMediaPlay(payload: any) {
   console.log(payload.Metadata);
 
   const metadata = payload.Metadata;
+  
+  const name = metadata.grandparentTitle.replace(/[^\w\s]/gi, "");
+  const index = metadata.index.toString();
+  const anilistResult = await searchAnimeAnilist(name);
+  console.log({anilistResult});
+  const { idMal, title, episodes } = anilistResult;
+  const status = index === episodes ? Status.COMPLETED : Status.WATCHING;
 
-  const title = metadata.grandparentTitle.replace(/[^\w\s]/gi, "");
-  //const status = payload.Metadata.index === episodes ? Status.COMPLETED : Status.WATCHING;
-  console.log({title});
+  const malResult = await updateAnimeStatus(idMal, status, index);
+  console.log({malResult});
   
 }
 
@@ -71,7 +77,11 @@ app.get("/search", async (req: Request, res: Response) => {
   console.log(query);
   if(typeof query === "string") {
     try{
-      const results = await searchAnimeAnilist(query);
+      // const results = await searchAnimeAnilist(query);
+
+      // const { idMal, title, episodes } = results;
+      // res.send({ idMal, title, episodes });
+      const results = await searchAnime(query);
       res.send(results);
     } catch(err) {
       res.send(err);

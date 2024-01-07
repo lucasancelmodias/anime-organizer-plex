@@ -30,8 +30,8 @@ export async function searchAnimeAnilist(name: string) : Promise<any>{
             name
         }
     });
-    console.log(response);
-    return response.data;
+    //console.log(response);
+    return response.data.data.Media;
 }
 
 export function generateAuthURL() : URL {
@@ -120,5 +120,15 @@ export async function refreshToken(): Promise<TokenResponse>{
 
     const response = await axios.post(url.toString(), data);
     console.log(response.data);
+    return response.data;
+}
+
+export async function updateAnimeStatus(animeId: number, status: string, num_watched_episodes: string) : Promise<any> {
+    const url = new URL(`/v2/anime/${animeId}/my_list_status`, process.env.MAL_BASE_URL);
+    const token: TokenResponse = await getAccessTokenFromDB();
+    const data = new URLSearchParams();
+    data.append("status", status);
+    data.append("num_watched_episodes", num_watched_episodes);
+    const response = await axios.put(url.toString(), data, { headers: { 'Authorization': `Bearer ${token.access_token}` } });
     return response.data;
 }
