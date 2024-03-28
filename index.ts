@@ -25,9 +25,10 @@ app.get("/", (_req: Request, res: Response) => {
 app.post("/event", upload.single("thumb"), async (req: Request, res: Response) =>{
 
   const payload = JSON.parse(req.body.payload);
-  console.log(payload);
+  console.log('event', payload.event);
   if(payload.event !== "media.play") {
     res.send("ok");
+    return;
   } 
 
   await handleMediaPlay(payload);
@@ -45,7 +46,7 @@ async function handleMediaPlay(payload: any) {
   const name = metadata.grandparentTitle.replace(/[^\w\s]/gi, "");
   const index = metadata.index.toString();
   const anilistResult = await searchAnimeAnilist(name);
-  console.log({anilistResult});
+  
   const { idMal, title, episodes } = anilistResult;
   const status = index === episodes ? Status.COMPLETED : Status.WATCHING;
 
@@ -74,7 +75,7 @@ app.get("/oauth2/callback", async (req: Request, res: Response) => {
 app.get("/search", async (req: Request, res: Response) => {
 
   const query = req.query.q;
-  console.log(query);
+  
   if(typeof query === "string") {
     try{
       // const results = await searchAnimeAnilist(query);
