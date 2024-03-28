@@ -2,10 +2,12 @@ import sqlite from 'sqlite3';
 import { type Token, type TokenResponse } from './types';
 import fs from 'fs';
 import path from 'path';
-
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DBSOURCE = "./db.sqlite";
+const dbPath = path.join(__dirname, DBSOURCE);
 
-export const db = new sqlite.Database(DBSOURCE, (err) => {
+export const db = new sqlite.Database(dbPath, (err) => {
     if(err) {
         console.log('Error connecting to database');
         console.log(err);
@@ -15,9 +17,6 @@ export const db = new sqlite.Database(DBSOURCE, (err) => {
 });
 
 export function initDB() {
-    const dbPath = path.resolve(import.meta.dir, DBSOURCE);
-    
-    // Check if the database file exists
     if (!fs.existsSync(dbPath)) {
         console.log('Database file not found. A new file will be created.');
     } else {
