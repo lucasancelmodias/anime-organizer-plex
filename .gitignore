@@ -177,4 +177,4 @@ dist
 #sqlite
 *.sqlite
 
-/build/*
+build/
