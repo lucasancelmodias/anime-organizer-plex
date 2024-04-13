@@ -45,9 +45,13 @@ async function handleMediaPlay(payload: any) {
   
   const name = metadata.grandparentTitle.replace(/[^\w\s]/gi, "");
   const index = metadata.index.toString();
-  const anilistResult = await searchAnimeAnilist(name);
+  const nameAndSeason = `${name} ${metadata.parentTitle}`;
+  console.log({nameAndSeason})
+  const anilistResult = await searchAnimeAnilist(nameAndSeason);
+
   
   const { idMal, title, episodes } = anilistResult;
+  console.log({idMal, title, episodes});
   const status = index === episodes ? Status.COMPLETED : Status.WATCHING;
 
   const malResult = await updateAnimeStatus(idMal, status, index);
