@@ -4,7 +4,7 @@ import { type TokenResponse } from "./types";
 
 //workaround for bun error 'bun zlib.createBrotliDecompress is not implemented' https://github.com/oven-sh/bun/issues/267#issuecomment-1854460357
 axios.defaults.headers.common["Accept-Encoding"] = "gzip";
-const anilistQuery = `query($name: String, $year: number){
+const anilistQuery = `query($name: String, $year: Int){
     Media(search: $name, type: ANIME, seasonYear: $year) {
       idMal
       episodes
